@@ -29,6 +29,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:18.1.0'
     implementation 'com.google.firebase:firebase-database:18.0.1'
 
+    // add this
+    implementation 'com.google.firebase:firebase-storage:18.1.1'
+
     // add this libaty and this
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.github.bumptech.glide:glide:4.8.0'

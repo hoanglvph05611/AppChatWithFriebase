@@ -24,7 +24,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.lvh.appchatwithfriebase.fragment.ChatsFragment;
+import com.lvh.appchatwithfriebase.fragment.ProfileFragment;
 import com.lvh.appchatwithfriebase.fragment.UsersFragment;
 import com.lvh.appchatwithfriebase.model.User;
 
@@ -41,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser firebaseUser;
     private DatabaseReference reference;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(" ");
+
 
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -78,8 +85,12 @@ public class MainActivity extends AppCompatActivity {
         ViewPager viewPager = findViewById(R.id.view_pager);
 
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter (getSupportFragmentManager());
+
+
         viewPagerAdapter.addFragment(new ChatsFragment(),"Chats");
         viewPagerAdapter.addFragment(new UsersFragment(),"Users");
+        viewPagerAdapter.addFragment(new ProfileFragment(),"Profile");
+
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
