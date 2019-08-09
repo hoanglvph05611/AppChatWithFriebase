@@ -70,10 +70,10 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+              finish();
+                 //startActivity(new Intent(MessageActivity.this,MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
-
 
 
         intent = getIntent();
@@ -83,9 +83,9 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String msg = textSend.getText().toString();
-                if (!msg.equals("")){
-                    sendMessage(fuser.getUid(),userid,msg);
-                } else{
+                if (!msg.equals("")) {
+                    sendMessage(fuser.getUid(), userid, msg);
+                } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
                 }
                 textSend.setText("");
@@ -99,12 +99,12 @@ public class MessageActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
                 usename.setText(user.getUsername());
-                if (user.getImageURL().equals("default")){
+                if (user.getImageURL().equals("default")) {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
-                }else {
-                    Glide.with(MessageActivity.this).load(user.getImageURL()).into(profile_image);
+                } else {
+                    Glide.with(getApplicationContext()).load(user.getImageURL()).into(profile_image);
                 }
-                readMessage(fuser.getUid(),userid,user.getImageURL());
+                readMessage(fuser.getUid(), userid, user.getImageURL());
             }
 
             @Override
@@ -113,30 +113,32 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
-    public void sendMessage(String sender,String receiver, String message){
+
+    public void sendMessage(String sender, String receiver, String message) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-        HashMap<String,Object> hashMap = new HashMap<>();
-        hashMap.put("sender",sender);
-        hashMap.put("receiver",receiver);
-        hashMap.put("message",message);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("sender", sender);
+        hashMap.put("receiver", receiver);
+        hashMap.put("message", message);
         reference.child("Chats").push().setValue(hashMap);
 
     }
-    private void readMessage(final String myid, final String userid,final String imageurl){
+
+    private void readMessage(final String myid, final String userid, final String imageurl) {
         chatList = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 chatList.clear();
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getReceiver().equals(myid)&& chat.getSender().equals(userid) ||
-                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                    if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
+                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
                         chatList.add(chat);
 
                     }
-                    messageAdapter = new MessageAdapter(MessageActivity.this,chatList,imageurl);
+                    messageAdapter = new MessageAdapter(MessageActivity.this, chatList, imageurl);
                     recyclerView.setAdapter(messageAdapter);
                 }
             }
@@ -148,4 +150,23 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
+    private void status(String status) {
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+        reference.updateChildren(hashMap);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
+    }
 }

@@ -40,7 +40,7 @@ public class ChatsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chats,container,false);
+        View view = inflater.inflate(R.layout.fragment_chats, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -54,19 +54,18 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 usersList.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
-                    if (chat.getSender().equals(firebaseUser.getUid())){
+                    if (chat.getSender().equals(firebaseUser.getUid())) {
                         usersList.add(chat.getReceiver());
                     }
-                    if (chat.getReceiver().equals(firebaseUser.getUid())){
+                    if (chat.getReceiver().equals(firebaseUser.getUid())) {
                         usersList.add(chat.getSender());
                     }
 
                 }
                 readChats();
             }
-
 
 
             @Override
@@ -77,19 +76,20 @@ public class ChatsFragment extends Fragment {
 
         return view;
     }
+
     private void readChats() {
         mUsers = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference("Users");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
-                    for (String id : usersList){
-                        if (user.getId().equals(id)){
-                            if (mUsers.size()!=0){
-                                for (User user1 : mUsers){
-                                    if (!user.getId().equals(user1.getId())){
+                    for (String id : usersList) {
+                        if (user.getId().equals(id)) {
+                            if (mUsers.size() != 0) {
+                                for (User user1 : mUsers) {
+                                    if (!user.getId().equals(user1.getId())) {
                                         mUsers.add(user);
                                     }
                                 }
@@ -99,7 +99,7 @@ public class ChatsFragment extends Fragment {
                         }
                     }
                 }
-                userAdapter = new UserAdapter(getContext(),mUsers);
+                userAdapter = new UserAdapter(getContext(), mUsers, false);
                 recyclerView.setAdapter(userAdapter);
             }
 

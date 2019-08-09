@@ -73,7 +73,7 @@ public void readUsers(){
                    mUsers.add(user);
                }
            }
-           userAdapter = new UserAdapter(getContext(),mUsers);
+           userAdapter = new UserAdapter(getContext(),mUsers,false);
            recyclerView.setAdapter(userAdapter);
         }
 
